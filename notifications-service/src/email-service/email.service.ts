@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { KafkaMessageValue } from 'src/common/kafka/interfaces/kafka-message.interface';
 import { KafkaService } from 'src/kafka/kafka.service';
 
 @Injectable()
 export class EmailService {
   constructor(private readonly kafkaService: KafkaService) {}
 
-  async handleWelcomeFlowEmail() {}
-
-  async handleInvoiceProcessingEmail() {}
-
-  async handleCartRemovalsEmail() {}
+  async handleEvent(data: KafkaMessageValue) {
+    
+  }
 }

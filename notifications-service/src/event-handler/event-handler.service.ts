@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { EmailPayload } from 'src/common/email/interfaces/email-payload.interface';
+import { BuildKafkaMessageInterface } from 'src/common/event-handler/interfaces/build-kafka-message.interface';
 import { KafkaMessageValue } from 'src/common/kafka/interfaces/kafka-message.interface';
 import { KafkaService } from 'src/kafka/kafka.service';
 
@@ -9,45 +10,34 @@ export class EventHandlerService {
 
   constructor(private readonly kafkaService: KafkaService) {}
 
-  async handleEvent(data: KafkaMessageValue) {
+  public async handleEvent(data: KafkaMessageValue) {
     const { originTopic } = data;
 
-    switch (originTopic) {
-      case 'welcome-flow':
-        await this.handleWelcomeFlowEmail(data);
-        break;
-      case 'invoice-processing':
-        await this.handleInvoiceProcessingEmail(data);
-        break;
-      case 'cart-removals':
-        await this.handleCartRemovalsEmail(data);
-        break;
-      default:
-        this.logger.warn(`❌ Evento no manejado: ${originTopic}`);
-        break;
-    }
-  }
-
-  async handleWelcomeFlowEmail(data: KafkaMessageValue) {
-    const { email, name } = data.payload;
-
-    if (!email || !name) {
-      this.logger.warn('❌ Evento welcome-flow inválido, falta email o nombre');
+    if (!originTopic) {
+      this.logger.warn('❌ Evento sin topic de origen');
       return;
     }
 
-    const emailContent: EmailPayload = {
-      to: email,
-      subject: `¡Bienvenido a nuestra plataforma!,`,
-      content: `Hola ${name}, gracias por registrarte en nuestro e-commerce.`,
-    };
+    await this.emitEmailEvent(data);
+  }
 
-    const message: KafkaMessageValue = this.buildKafkaMessage(
-      'email-service',
-      'notifications',
-      emailContent,
-      {},
-    );
+  private async emitEmailEvent(data: KafkaMessageValue) {
+    const { email } = data.payload.user;
+
+    const emailContent = this.getEmailContent(data);
+
+    if (!emailContent) {
+      this.logger.warn(
+        '⚠️ No se pudo construir el contenido del email. Evento omitido.',
+      );
+      return;
+    }
+
+    const message: KafkaMessageValue = this.buildKafkaMessage({
+      targetTopic: 'email-service',
+      originTopic: 'notifications',
+      payload: { email: emailContent },
+    });
 
     this.logger.log(`📤 Enviando email de bienvenida a ${email}`);
 
@@ -58,27 +48,66 @@ export class EventHandlerService {
     }
   }
 
-  async handleInvoiceProcessingEmail(data: KafkaMessageValue) {
-    const { email } = data.payload;
+  private getEmailContent(data: KafkaMessageValue): EmailPayload | null {
+    const { originTopic } = data;
+
+    switch (originTopic) {
+      case 'welcome-flow':
+        return this.getWelcomeEmailContent(data);
+      case 'invoice-processing':
+        return this.getInvoiceProcessingEmailContent(data);
+      case 'cart-removals':
+        return this.getCartRemovalsEmailContent(data);
+      default:
+        this.logger.warn(`❌ Evento no manejado: ${data.originTopic}`);
+        return null;
+    }
   }
 
-  async handleCartRemovalsEmail(data: KafkaMessageValue) {
-    const { email } = data.payload;
+  private getWelcomeEmailContent(data: KafkaMessageValue): EmailPayload {
+    const { email, name } = data.payload.user;
+
+    return {
+      to: email,
+      subject: `¡Bienvenido a nuestra plataforma!,`,
+      content: `Hola ${name}, gracias por registrarte en nuestro e-commerce.`,
+    };
+  }
+
+  private getInvoiceProcessingEmailContent(
+    data: KafkaMessageValue,
+  ): EmailPayload {
+    const { email } = data.payload.user;
+    const { invoiceId, total } = data.payload.invoice;
+
+    return {
+      to: email,
+      subject: `Factura ${invoiceId}`,
+      content: `Total ${total}`,
+    };
+  }
+
+  private getCartRemovalsEmailContent(data: KafkaMessageValue): EmailPayload {
+    const { email, name } = data.payload.user;
+    const { name: productName } = data.payload.product;
+
+    return {
+      to: email,
+      subject: `¿Olvidaste algo en tu carrito?`,
+      content: `Hola ${name}, vimos que eliminaste '${productName}' de tu carrito...`,
+    };
   }
 
   private buildKafkaMessage(
-    targetTopic: string,
-    originTopic: string,
-    payload: any,
-    snapshot: Record<string, any> = {},
+    data: BuildKafkaMessageInterface,
   ): KafkaMessageValue {
     return {
       timestamp: new Date().toISOString(),
       source: 'notifications-service',
-      topic: targetTopic,
-      originTopic: originTopic,
-      payload,
-      snapshot,
+      topic: data.targetTopic,
+      originTopic: data.originTopic,
+      payload: data.payload,
+      snapshot: data.snapShot || {},
     };
   }
 }

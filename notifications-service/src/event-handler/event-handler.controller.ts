@@ -7,7 +7,7 @@ export class EventHandlerController {
   constructor(private readonly eventHandlerService: EventHandlerService) {}
 
   @EventPattern('notifications')
-  async handleWelcomeFlowTopic(@Payload() data: any) {
+  async handleNotificationsEvent(@Payload() data: any) {
     await this.eventHandlerService.handleEvent(data);
   }
 }

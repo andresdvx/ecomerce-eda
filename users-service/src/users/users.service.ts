@@ -21,7 +21,7 @@ export class UsersService {
   ): KafkaMessageValue {
     return {
       timestamp: new Date().toISOString(),
-      source: 'notifications-service',
+      source: 'UserService',
       topic,
       originTopic: 'welcome-flow',
       payload,
@@ -31,8 +31,11 @@ export class UsersService {
 
   async createUser(userData: any) {
     const message = this.buildKafkaMessage('notifications', {
-      name: 'juancho',
-      email: 'juancho@mail.com',
+      user: {
+        id: 'user_2940',
+        email: 'judascain@cainabel.com',
+        name: 'judascain setzo',
+      }
     });
 
     await this.kafkaService.emit('notifications', message);
