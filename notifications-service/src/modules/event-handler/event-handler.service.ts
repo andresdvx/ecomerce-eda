@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { EmailPayload } from 'src/common/email/interfaces/email-payload.interface';
 import { BuildKafkaMessageInterface } from 'src/common/event-handler/interfaces/build-kafka-message.interface';
 import { KafkaMessageValue } from 'src/common/kafka/interfaces/kafka-message.interface';
-import { KafkaService } from 'src/kafka/kafka.service';
+import { KafkaService } from 'src/modules/kafka/kafka.service';
 
 @Injectable()
 export class EventHandlerService {
