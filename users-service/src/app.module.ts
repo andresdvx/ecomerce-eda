@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 import { KafkaModule } from './kafka/kafka.module';
-import { EmailModule } from './email-service/email.module';
+import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
-import { EventHandlerModule } from './event-handler/event-handler.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    UsersModule,
     KafkaModule,
-    EventHandlerModule,
-    EmailModule,
   ],
   controllers: [],
   providers: [],

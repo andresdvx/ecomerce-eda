@@ -1,23 +1,23 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Kafka, logLevel, Producer } from 'kafkajs';
-import { KafkaMessageValue } from 'src/common/kafka/interfaces/kafka-message.interface';
 
 @Injectable()
 export class KafkaService implements OnModuleInit {
+
   private kafka = new Kafka({
     clientId: 'users-service',
     brokers: ['localhost:9092'],
-    logLevel: logLevel.ERROR,
+    logLevel: logLevel.ERROR
   });
   private producer: Producer = this.kafka.producer();
 
   async onModuleInit() {
-    console.info('Connecting to Kafka ...');
+    console.info('Connecting to Kafka...');
     await this.producer.connect();
-    console.info('✅ Kafka connected!');
+    console.info('Kafka connected!');
   }
-  
-  async emit(topic: string, message: KafkaMessageValue) {
+
+  async emit(topic: string, message: any) {
     try {
       await this.producer.send({
         topic,
@@ -28,7 +28,7 @@ export class KafkaService implements OnModuleInit {
         ],
       });
     } catch (error) {
-      console.error('❌ Error sending message:', error);
+      console.error('Error sending message:', error);
     }
   }
 }

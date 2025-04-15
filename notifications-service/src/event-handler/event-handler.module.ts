@@ -3,6 +3,7 @@ import { EventHandlerService } from './event-handler.service';
 import { EventHandlerController } from './event-handler.controller';
 
 @Module({
+  imports: [],
   controllers: [EventHandlerController],
   providers: [EventHandlerService],
 })
