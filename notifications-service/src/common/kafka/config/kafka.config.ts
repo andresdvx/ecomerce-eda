@@ -11,7 +11,7 @@ export const kafkaConfig: MicroserviceOptions = {
       groupId: 'notificacions-consumer-group', 
     },
     run: {
-      autoCommit: true,
+      autoCommit: false,
     },
   },
 };

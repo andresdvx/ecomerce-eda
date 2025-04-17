@@ -23,7 +23,7 @@ export class UsersService {
       timestamp: new Date().toLocaleString(),
       source: 'UserService',
       topic,
-      originTopic: 'welcome-flow',
+      originTopic: 'invoice-processing',
       payload,
       snapshot,
     };
@@ -35,6 +35,10 @@ export class UsersService {
         id: 'user_2940',
         email: 'apacheco.sysnet@gmail.com',
         name: 'judascain setzo',
+      },
+      invoice: {
+        invoiceId: 'invoice_09082',
+        total: '50000'
       }
     });
 
