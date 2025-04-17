@@ -39,7 +39,7 @@ export class EventHandlerService {
       payload: { email: emailContent },
     });
 
-    this.logger.log(`📤 Enviando email de bienvenida a ${email}`);
+    this.logger.log(`📤 Sending email to ${email}`);
 
     try {
       await this.kafkaService.emit('email-service', message);
@@ -102,7 +102,7 @@ export class EventHandlerService {
     data: BuildKafkaMessageInterface,
   ): KafkaMessageValue {
     return {
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toLocaleString(),
       source: 'notifications-service',
       topic: data.targetTopic,
       originTopic: data.originTopic,

@@ -20,7 +20,7 @@ export class UsersService {
     snapshot: Record<string, any> = {},
   ): KafkaMessageValue {
     return {
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toLocaleString(),
       source: 'UserService',
       topic,
       originTopic: 'welcome-flow',
@@ -33,12 +33,13 @@ export class UsersService {
     const message = this.buildKafkaMessage('notifications', {
       user: {
         id: 'user_2940',
-        email: 'judascain@cainabel.com',
+        email: 'apacheco.sysnet@gmail.com',
         name: 'judascain setzo',
       }
     });
 
     await this.kafkaService.emit('notifications', message);
+    console.log('Event Emitted to: ', message.topic, 'message: ', message);
     return userData;
   }
 }
