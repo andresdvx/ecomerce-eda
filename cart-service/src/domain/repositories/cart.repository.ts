@@ -2,10 +2,7 @@ import { CartEntity } from "../entities/Cart.entity";
 import { ProductToCartDto } from "../schema/cart.schema";
 
 export abstract class CartRepository {
-    abstract get(): Promise<CartEntity[]>;
-    abstract addProduct (data: ProductToCartDto): Promise<void>;
-    abstract removeProduct (productId: string, userId: string): Promise<void>;
+  abstract getCart(userId: string): Promise<CartEntity>;
+  abstract addToCart(data: ProductToCartDto): Promise<CartEntity>;
+  abstract removeFromCart(userId: string, productId: string): Promise<CartEntity>;
 }
-
-// add : (userId, productId, quantity ) : cartId, totalItems, updatedAt
-// delete : (userId, productId) : userId, productId, quantity

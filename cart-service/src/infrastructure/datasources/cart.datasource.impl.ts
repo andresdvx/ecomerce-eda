@@ -1,19 +1,52 @@
-import { CartDatasource } from "../../domain/datasources/cart.datasource";
-import { prisma } from '../../../../shared/database/postgres';
+import { PrismaClient } from '@prisma/client';
+import { CartEntity } from '../../domain/entities/Cart.entity';
+import { CartDatasource } from '../../domain/datasources/cart.datasource';
+import { ProductToCartDto } from '../../domain/schema/cart.schema';
+
+const prisma = new PrismaClient();
 
 export class CartDatasourceImpl implements CartDatasource {
+  async getCart(userId: string): Promise<CartEntity> {
+    const cartItems = await prisma.cart.findMany({
+      where: { userId },
+      include: { product: true }
+    });
 
-    async get(): Promise<any[]> {
-        return prisma.findMany();
-    }
+    return CartEntity.fromPrismaModels(cartItems);
+  }
 
-    async addProduct(data: any): Promise<void> {
-        await prisma.create({ data });
-    }
+  async addItem(data: ProductToCartDto): Promise<CartEntity> {
+    await prisma.cart.upsert({
+      where: {
+        userId_productId: {
+          userId: data.userId,
+          productId: data.productId
+        }
+      },
+      create: {
+        userId: data.userId,
+        productId: data.productId,
+        quantity: data.quantity
+      },
+      update: {
+        quantity: {
+          increment: data.quantity
+        }
+      },
+      include: { product: true }
+    });
 
-    async removeProduct(productId: string, userId: string): Promise<void> {
-        await prisma.deleteMany({
-            where: { productId, userId },
-        });
-    }
+    return this.getCart(data.userId);
+  }
+
+  async removeItem(userId: string, productId: string): Promise<CartEntity> {
+    await prisma.cart.deleteMany({
+      where: {
+        userId,
+        productId
+      }
+    });
+
+    return this.getCart(userId);
+  }
 }

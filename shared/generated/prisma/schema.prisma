@@ -15,7 +15,7 @@ datasource db {
 }
 
 model Product {
-  id          String   @id @default(cuid())
+  id          String   @id @default(uuid())
   name        String
   description String
   price       Float
@@ -26,7 +26,7 @@ model Product {
 }
 
 model Cart {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   userId    String
   product   Product  @relation(fields: [productId], references: [id])
   productId String
@@ -34,6 +34,7 @@ model Cart {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([userId, productId])
   @@index([userId])
   @@index([productId])
 }

@@ -1,21 +1,25 @@
-import { CartDatasource } from '../../domain/datasources/cart.datasource';
-import { CartEntity } from '../../domain/entities/Cart.entity';
-import { CartRepository } from '../../domain/repositories/cart.repository';
-import { ProductToCartDto } from '../../domain/schema/cart.schema';
-export class CartRepositoryImpl implements CartRepository{
+import { CartRepository } from "../../domain/repositories/cart.repository";
+import { CartEntity } from "../../domain/entities/Cart.entity";
+import { ProductToCartDto } from "../../domain/schema/cart.schema";
+import { CartDatasource } from "../../domain/datasources/cart.datasource";
 
-    constructor(
-        private readonly datasource : CartDatasource
-    ){}
+export class CartRepositoryImpl implements CartRepository {
+  constructor(
+    private readonly datasource: CartDatasource
+  ) {}
 
-    get(): Promise<CartEntity[]> {
-        return this.datasource.get();
-    }
-    addProduct(data: ProductToCartDto): Promise<void> {
-        return this.datasource.addProduct(data);
-    }
-    removeProduct(productId: string, userId: string): Promise<void> {
-        return this.datasource.removeProduct(productId, userId);
-    }
+  async getCart(userId: string): Promise<CartEntity> {
+    return this.datasource.getCart(userId);
+  }
 
+  async addToCart(data: ProductToCartDto): Promise<CartEntity> {
+    if (data.quantity <= 0) {
+      throw new Error("Quantity must be positive");
+    }
+    return this.datasource.addItem(data);
+  }
+
+  async removeFromCart(userId: string, productId: string): Promise<CartEntity> {
+    return this.datasource.removeItem(userId, productId);
+  }
 }
