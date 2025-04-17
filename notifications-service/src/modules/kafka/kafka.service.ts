@@ -1,11 +1,11 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { Kafka, logLevel, Producer } from 'kafkajs';
 import { KafkaMessageValue } from 'src/common/kafka/interfaces/kafka-message.interface';
 
 @Injectable()
-export class KafkaService implements OnModuleInit {
+export class KafkaService implements OnModuleInit, OnModuleDestroy {
   private kafka = new Kafka({
-    clientId: 'users-service',
+    clientId: 'notifications-service',
     brokers: ['localhost:9092'],
     logLevel: logLevel.ERROR,
   });
@@ -16,7 +16,11 @@ export class KafkaService implements OnModuleInit {
     await this.producer.connect();
     console.info('✅ Kafka connected!');
   }
-  
+
+  onModuleDestroy() {
+    this.producer.disconnect();
+  }
+
   async emit(topic: string, message: KafkaMessageValue) {
     try {
       await this.producer.send({

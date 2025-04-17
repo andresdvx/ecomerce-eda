@@ -7,7 +7,7 @@ export class KafkaService implements OnModuleInit {
   private kafka = new Kafka({
     clientId: 'users-service',
     brokers: ['localhost:9092'],
-    logLevel: logLevel.ERROR
+    logLevel: logLevel.ERROR,
   });
   private producer: Producer = this.kafka.producer();
 
@@ -27,6 +27,8 @@ export class KafkaService implements OnModuleInit {
           },
         ],
       });
+
+      this.producer.disconnect();
     } catch (error) {
       console.error('Error sending message:', error);
     }
