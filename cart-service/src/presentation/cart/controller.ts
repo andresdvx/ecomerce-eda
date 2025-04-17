@@ -10,7 +10,10 @@ export class CartController {
     constructor(
         private readonly repository: CartRepository,
         private readonly eventPublisher: EventPublisher
-    ) { }
+    ) { 
+        console.log('Repository:', repository);  // Verify the repository
+        console.log('Event Publisher:', eventPublisher);  
+    }
 
     async addToCart({ body }: Request, res: Response) {
         try {
@@ -19,7 +22,8 @@ export class CartController {
             const cart = await new AddToCartUseCase(this.repository, this.eventPublisher).execute(data);
             res.status(200).json(cart);
         } catch (error) {
-            res.status(400).json({ error: error });
+            console.log({'Error: ': error});
+            res.status(500).json({ error: error });
         }
     }
 
@@ -30,7 +34,8 @@ export class CartController {
             const cart = await new RemoveFromCartUseCase(this.repository, this.eventPublisher).execute(userId, productId);
             res.status(200).json(cart);
         } catch (error) {
-            res.status(400).json({ error: error });
+            console.log(error);
+            res.status(500).json({ error: error });
         }
     }
 
@@ -40,7 +45,7 @@ export class CartController {
             const cart = await new GetCartUseCase(this.repository).execute(userId);
             res.status(200).json(cart);
         } catch (error) {
-            res.status(400).json({ error: error });
+            res.status(500).json({ error: error });
         }
     }
 }

@@ -1,4 +1,4 @@
-import {Router} from "express";
+import { Router } from "express";
 import { KafkaEventPublisher } from "../../infrastructure/events/kafka-cart-event-publisher.impl";
 import { CartRepositoryImpl } from "../../infrastructure/repositories/cart.repository.impl";
 import { CartDatasourceImpl } from "../../infrastructure/datasources/cart.datasource.impl";
@@ -13,10 +13,10 @@ export class CartRoutes {
         const eventPlublisher = new KafkaEventPublisher();
         const controller = new CartController(repository, eventPlublisher);
 
-        router.get('/:userId', controller.getCart);
-        router.post('/items', controller.getCart);
-        router.delete('/items/:productId', controller.removeFromCart);
 
+        router.post('/items', controller.addToCart.bind(controller));
+        router.delete('/items/:productId', controller.removeFromCart.bind(controller));
+        router.get('/:userId', controller.getCart.bind(controller));
 
 
         return router

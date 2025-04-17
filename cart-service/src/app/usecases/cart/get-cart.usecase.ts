@@ -5,6 +5,6 @@ export class GetCartUseCase {
   constructor(private readonly repository: CartRepository) {}
 
   async execute(userId: string): Promise<CartEntity> {
-    return this.repository.getCart(userId);
+    return await this.repository.getCart(userId);
   }
 }

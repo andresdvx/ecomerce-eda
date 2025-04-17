@@ -1,9 +1,7 @@
-import { PrismaClient } from '@prisma/client';
 import { CartEntity } from '../../domain/entities/Cart.entity';
 import { CartDatasource } from '../../domain/datasources/cart.datasource';
 import { ProductToCartDto } from '../../domain/schema/cart.schema';
-
-const prisma = new PrismaClient();
+import { prisma } from '../../../../shared';
 
 export class CartDatasourceImpl implements CartDatasource {
   async getCart(userId: string): Promise<CartEntity> {

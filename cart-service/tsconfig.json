@@ -6,7 +6,8 @@
     "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
-    "composite": true
+    "composite": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src"],
   "references": [
