@@ -135,7 +135,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\ASUS\\Desktop\\workspace\\college\\products-cart-service\\shared\\generated\\prisma",
+      "value": "C:\\Electiva\\ecomerce-eda\\shared\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -149,7 +149,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\ASUS\\Desktop\\workspace\\college\\products-cart-service\\shared\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Electiva\\ecomerce-eda\\shared\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {

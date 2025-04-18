@@ -46,7 +46,19 @@ services:
     ports:
       - "27017:27017"
     networks:
-    - broker-kafka 
+      - broker-kafka
+
+  posgres-db:
+    image: postgres:15.3
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
 
   order-service:
     build: ./order-service
@@ -81,3 +93,6 @@ services:
 networks:
   broker-kafka:
     driver: bridge
+
+volumes:
+  pgdata:

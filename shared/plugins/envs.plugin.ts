@@ -1,8 +1,7 @@
-import 'dotenv/config';
-import * as env from 'env-var';
+import "dotenv/config";
+import * as env from "env-var";
 
 export const envs = {
-    PORT: env.get('PORT').required().asIntPositive(),
-
-    // postgres
-}
+  //   PORT: env.get("PORT").required().asIntPositive(),
+  // postgres
+};
