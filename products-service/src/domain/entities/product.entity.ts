@@ -18,4 +18,14 @@ export class ProductEntity {
         this.price = price;
         this.category = category;
     }
+
+    static fromPrismaModel(data: any): Product {
+        return new ProductEntity({
+            id: data.id,
+            name: data.name,
+            description: data.description,
+            price: data.price,
+            category: data.category
+        });
+    }
 }
