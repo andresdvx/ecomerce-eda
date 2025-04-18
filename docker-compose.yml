@@ -45,6 +45,8 @@ services:
     image: mongo
     ports:
       - "27017:27017"
+    networks:
+    - broker-kafka 
 
   order-service:
     build: ./order-service
@@ -53,11 +55,13 @@ services:
     ports:
       - "3001:3001"
     environment:
-      KAFKA_BROKER: kafka:9092
+      KAFKA_BROKER: kafka:29092
       MONGO_URI: mongodb://mongodb:27017/ecommerce
     depends_on:
       - kafka
       - mongodb
+    networks:
+      - broker-kafka
 
   billing-service:
     build: ./billing-service
@@ -66,11 +70,13 @@ services:
     ports:
       - "3002:3002"
     environment:
-      KAFKA_BROKER: kafka:9092
+      KAFKA_BROKER: kafka:29092
       MONGO_URI: mongodb://mongodb:27017/ecommerce
     depends_on:
       - kafka
       - mongodb
+    networks:
+      - broker-kafka
 
 networks:
   broker-kafka:

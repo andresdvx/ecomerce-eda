@@ -1,6 +1,7 @@
 import { Kafka } from "kafkajs";
 import { guardarEventoMongo } from "./mongo";
 import { v4 as uuidv4 } from "uuid";
+import { timeStamp } from "console";
 
 const kafka = new Kafka({
   clientId: "billing-service",
@@ -36,6 +37,31 @@ export async function connectKafkaConsumer() {
         messages: [{ value: JSON.stringify(invoice) }],
       });
 
+      await producer.send({
+        topic: "notifications",
+        messages: [
+          {
+            value: JSON.stringify({
+              timeStamp: new Date().toLocaleString(),
+              source: "BillingService",
+              topic: "notifications",
+              originTopic: "invoice-processing",
+              payload: {
+                invoice: {
+                  invoiceId: invoice.invoiceId,
+                  total: invoice.total,
+                },
+                user: {
+                  id: "1234",
+                  email: "jimmy.jimenez@unicolombo.edu.co",
+                  name: "Jimmy Jimenez",
+                },
+              },
+            }),
+          },
+        ],
+      });
+
       await guardarEventoMongo({
         eventId: uuidv4(),
         timestamp: new Date(),
@@ -45,9 +71,9 @@ export async function connectKafkaConsumer() {
         snapshot: invoice,
       });
 
-      console.log(
-        "📤 Factura enviada a Kafka → invoice-processing y guardada en MongoDB"
-      );
+      console.log("📤 Factura enviada a Kafka → invoice-processing");
+      console.log("📨 Evento emitido a Kafka → notifications");
+      console.log("📦 Evento guardado en MongoDB:", invoice.invoiceId);
     },
   });
 }
