@@ -78,6 +78,19 @@ services:
     networks:
       - broker-kafka
 
+  # event-store-service:
+  #   build: ./event-store-service
+  #   volumes:
+  #     - ./event-store-service:/app
+  #   environment:
+  #     KAFKA_BROKER: kafka:9092
+  #     MONGO_URI: mongodb://mongodb:27017/ecommerce
+  #   depends_on:
+  #     - kafka
+  #     - mongodb
+  #   networks:
+  #     - broker-kafka
+
 networks:
   broker-kafka:
     driver: bridge
