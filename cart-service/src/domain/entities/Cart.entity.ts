@@ -21,11 +21,11 @@ interface CartPrismaModel {
 
 export class CartEntity {
   constructor(
-    public readonly id: string,
-    public readonly userId: string,
-    public readonly products: Array<Product & { quantity: number }>,
-    public readonly totalItems: number
-  ) {}
+    public id: string,
+    public userId: string,
+    public products: Array<Product & { quantity: number }>,
+    public totalItems: number
+  ) { }
 
   static fromPrismaModels(cartItems: CartPrismaModel[]): CartEntity {
     if (!cartItems.length) {

@@ -19,20 +19,41 @@ export class KafkaEventPublisher implements EventPublisher {
         await this.producer.connect();
     }
 
-    async publishCartUpdated(data: ProductToCartDto): Promise<void> {
+    async publishCartUpdated({ productId, userId, quantity }: ProductToCartDto): Promise<void> {
         await this.connect();
         await this.producer.send({
             topic: 'cart-updates',
-            messages: [{ value: JSON.stringify(data) }]
+            messages: [{
+                value: JSON.stringify({
+                    timeStamp: new Date().toISOString(),
+                    source: "CardUpdated",
+                    topic: "card-updates",
+                    payload: {
+                        userId: userId,
+                        productId: productId,
+                        quantity: quantity
+                    }
+                })
+            }]
         });
     }
 
-    async publishCartRemoved(userId: string, productId: string): Promise<void> {
+    async publishCartRemoved(userId: string, productId: string, productName: string): Promise<void> {
         await this.connect();
-
         await this.producer.send({
             topic: 'cart-removals',
-            messages: [{ value: JSON.stringify({ userId, productId }) }]
+            messages: [{
+                value: JSON.stringify({
+                    timestamp: new Date().toISOString(),
+                    source: "CartRemoval",
+                    topic: "notifications",
+                    originTopic: "cart-removals",
+                    payload: {
+                        product: {name: productName},
+                        userId: userId,
+                    },
+                })
+            }]
         });
     }
 }

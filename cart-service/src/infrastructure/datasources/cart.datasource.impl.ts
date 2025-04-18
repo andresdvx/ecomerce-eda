@@ -10,6 +10,8 @@ export class CartDatasourceImpl implements CartDatasource {
       include: { product: true }
     });
 
+    console.log('cartItems', cartItems);
+
     return CartEntity.fromPrismaModels(cartItems);
   }
 
@@ -37,14 +39,33 @@ export class CartDatasourceImpl implements CartDatasource {
     return this.getCart(data.userId);
   }
 
-  async removeItem(userId: string, productId: string): Promise<CartEntity> {
+  async removeItem(userId: string, productId: string): Promise<{ productId: string; userId: string; productName: string }> {
+    const existingItem = await prisma.cart.findFirst({
+      where: {
+        userId,
+        productId
+      },
+      include: {
+        product: true
+      }
+    });
+  
+    if (!existingItem) {
+      return { productId, userId, productName: '' }; 
+    }
+  
     await prisma.cart.deleteMany({
       where: {
         userId,
         productId
       }
     });
-
-    return this.getCart(userId);
+  
+    return {
+      productId,
+      userId,
+      productName: existingItem.product.name
+    };
   }
+  
 }

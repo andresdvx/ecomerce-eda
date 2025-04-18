@@ -19,7 +19,7 @@ export class CartRepositoryImpl implements CartRepository {
     return this.datasource.addItem(data);
   }
 
-  async removeFromCart(userId: string, productId: string): Promise<CartEntity> {
+  async removeFromCart(userId: string, productId: string): Promise<{ productId: string; userId: string, productName: string }> {
     return this.datasource.removeItem(userId, productId);
   }
 }
