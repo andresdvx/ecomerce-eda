@@ -25,7 +25,7 @@ export class KafkaEventPublisher implements EventPublisher {
             topic: 'cart-updates',
             messages: [{
                 value: JSON.stringify({
-                    timeStamp: new Date().toISOString(),
+                    timeStamp: new Date().toLocaleDateString(),
                     source: "CardUpdated",
                     topic: "card-updates",
                     payload: {
