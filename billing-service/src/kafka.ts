@@ -30,6 +30,12 @@ export async function connectKafkaConsumer() {
         issuedAt: new Date(),
       };
 
+      const user = {
+        userId: order.userId,
+        userEmail: order.userEmail,
+        userName: order.userName,
+      };
+
       console.log("🧾 Factura generada desde order:", invoice);
 
       await producer.send({
@@ -52,9 +58,9 @@ export async function connectKafkaConsumer() {
                   total: invoice.total,
                 },
                 user: {
-                  id: "1234",
-                  email: "jimmy.jimenez@unicolombo.edu.co",
-                  name: "Jimmy Jimenez",
+                  id: user.userId,
+                  email: user.userEmail,
+                  name: user.userName,
                 },
               },
             }),
