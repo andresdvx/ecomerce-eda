@@ -41,6 +41,11 @@ services:
     networks:
       - broker-kafka
 
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+
   order-service:
     build: ./order-service
     volumes:
