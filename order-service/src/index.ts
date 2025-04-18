@@ -11,11 +11,13 @@ app.get("/", (req, res) => {
 });
 
 app.post("/api/orders", async (req, res) => {
-  const { userId, items } = req.body;
+  const { userId, items, userEmail, userName } = req.body;
 
   const order = {
     orderId: `ORDER_${Date.now()}`,
     userId,
+    userEmail,
+    userName,
     items,
     total: items.reduce(
       (sum: number, item: any) => sum + item.price * item.quantity,
