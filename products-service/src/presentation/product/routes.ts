@@ -13,11 +13,9 @@ export class ProductRoutes {
         const eventPlublisher = new KafkaProductPublisher();
         const controller = new ProductController(repository, eventPlublisher);
 
+        router.post('/api/products', controller.create.bind(controller));
+        router.get('/api/products', controller.getAll.bind(controller));
 
-        router.post('/', controller.create.bind(controller));
-        router.get('/', controller.getAll.bind(controller));
-
-
-        return router
+        return router;
     }
 }

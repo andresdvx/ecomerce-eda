@@ -20,6 +20,7 @@ export class KafkaEventPublisher implements EventPublisher {
     }
 
     async publishCartUpdated(data: ProductToCartDto): Promise<void> {
+        await this.connect();
         await this.producer.send({
             topic: 'cart-updates',
             messages: [{ value: JSON.stringify(data) }]
@@ -27,6 +28,8 @@ export class KafkaEventPublisher implements EventPublisher {
     }
 
     async publishCartRemoved(userId: string, productId: string): Promise<void> {
+        await this.connect();
+
         await this.producer.send({
             topic: 'cart-removals',
             messages: [{ value: JSON.stringify({ userId, productId }) }]

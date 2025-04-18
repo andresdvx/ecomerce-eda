@@ -18,6 +18,7 @@ export class KafkaProductPublisher implements ProductEventPublisher {
   }
 
   async publishProductCreated(product: ProductDto): Promise<void> {
+    await this.connect(); 
     await this.producer.send({
       topic: 'product-created',
       messages: [{
